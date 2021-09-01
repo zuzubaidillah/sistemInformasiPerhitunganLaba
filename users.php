@@ -1,10 +1,7 @@
 <?php
-// session merupakan data yang disimpan dalam suatu server yang dapat digunakan secara global di server tersebut
-// session_start();
-// if (!$_SESSION['ssIdUser']) {
-//     // mengirim header HTTP
-//     header("Location: login.php?keterangan=andaHarusLogindahulu");
-// }
+session_start();
+include "./config/koneksi.php";
+include "./config/flash.php";
 ?>
 
 <!DOCTYPE html>
@@ -28,6 +25,11 @@
 <body>
     <main>
         <header>
+            <?php
+            if (flash("notif")) {
+                echo flash('notif');
+            };
+            ?>
             <h2>Data Users (pengguna)</h2>
         </header>
         <nav style="border: 1px solid black; margin-bottom: 5px;">
@@ -56,28 +58,33 @@
                         <th style="width: 15%;">Tanggal DiUbah</th>
                         <th style="width: 10%;">-</th>
                     </tr>
+                    <?php
+                        $sqlUsers = mysqli_query($conn, "SELECT * FROM tabelUser ORDER BY tanggalDiBuat DESC");
+                        $no = 1;
+                        while($rowUsers = mysqli_fetch_array($sqlUsers)){
+                    ?>
                     <tr>
-                        <td>1</td>
-                        <td>Karika Putri</td>
-                        <td>putri</td>
-                        <td style="text-align: right;">Senin, 23 Agustus 2021 12:00</td>
-                        <td style="text-align: right;">Senin, 23 Agustus 2021 12:00</td>
+                        <td><?= $no; ?></td>
+                        <td><?= $rowUsers['namaDepan']; ?> <?= $rowUsers['namaBelakang']; ?></td>
+                        <td><?= $rowUsers['username']; ?></td>
+                        <td style="text-align: right;"><?= $rowUsers['tanggalDiBuat']; ?></td>
+                        <td style="text-align: right;"><?= $rowUsers['tanggalDiRubah']; ?></td>
                         <td>
-                            <a style="background-color: yellow; padding: 5px; color: black;" href="editUser.php">Edit</a>
-                            <a style="background-color: red; padding: 5px; color: black;" onclick="return confirm('Yakin DiHapus?')" href="#">Hapus</a>
+                            <a style="background-color: yellow; padding: 5px; color: black;" href="editUser.php?id=<?=$rowUsers['idUser'];?>">Edit</a>
+                            <!-- seleksi ketika baris user yang sedang login maka tidak ditampilkan -->
+                            <?php
+                            if ($rowUsers['idUser']!==$_SESSION['ssIdUser']) {
+                            ?>
+                                <a style="background-color: red; padding: 5px; color: black;" onclick="return confirm('Yakin DiHapus?')" href="usersHapus.php?id=<?=$rowUsers['idUser'];?>">Hapus</a>
+                            <?php
+                            }
+                            ?>
                         </td>
                     </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Putri Della</td>
-                        <td>putriDella</td>
-                        <td style="text-align: right;">Senin, 23 Agustus 2021 13:00</td>
-                        <td style="text-align: right;">Senin, 23 Agustus 2021 13:00</td>
-                        <td>
-                            <a style="background-color: yellow; padding: 5px; color: black;" href="editUser.php">Edit</a>
-                            <a style="background-color: red; padding: 5px; color: black;" onclick="return confirm('Yakin DiHapus?')" href="#">Hapus</a>
-                        </td>
-                    </tr>
+                    <?php
+                        $no++;
+                        }
+                    ?>
                 </thead>
             </table>
         </article>

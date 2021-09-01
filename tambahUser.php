@@ -1,10 +1,51 @@
 <?php
-// session merupakan data yang disimpan dalam suatu server yang dapat digunakan secara global di server tersebut
-// session_start();
-// if (!$_SESSION['ssIdUser']) {
-//     // mengirim header HTTP
-//     header("Location: login.php?keterangan=andaHarusLogindahulu");
-// }
+session_start();
+include "./config/koneksi.php";
+include "./config/flash.php";
+
+if (isset($_POST['namaDepan'])) {
+    $namaDepan = htmlspecialchars($_POST['namaDepan'], ENT_QUOTES);
+    $namaBelakang = htmlspecialchars($_POST['namaBelakang'], ENT_QUOTES);
+    $username = htmlspecialchars($_POST['username'], ENT_QUOTES);
+    $password = htmlspecialchars($_POST['password'], ENT_QUOTES);
+    $passwordConfirm = htmlspecialchars($_POST['passwordConfirm'], ENT_QUOTES);
+
+    $sqlUsers = mysqli_query($conn, "SELECT username FROM tabelUser WHERE username='$username'");
+    $countUser = mysqli_num_rows($sqlUsers);
+    // cek dulu kira2 hasil yang dikeluarkan dari tabel user
+
+    // pengecekan apakah username sudah digunakan?
+    if (!$countUser) {
+        // simpan
+        // pengecekan password
+        if ($password === $passwordConfirm) {
+            // proses simpan data
+            // pembuatan id secara otomatis
+            $idUser = mt_rand(342312, 6329453);
+            $tanggalDiBuat = date('Y-m-d H:i:s');
+
+            // encripsi password
+            $passwordEngkripsi = password_hash($password, PASSWORD_DEFAULT);
+
+            $sql = "INSERT INTO tabelUser (`idUser`,`namaDepan`, `namaBelakang`, `username`, `password`, `tanggalDiBuat`, `tanggalDiRubah`) VALUES ('$idUser', '$namaDepan', '$namaBelakang', '$username', '$passwordEngkripsi','$tanggalDiBuat','$tanggalDiBuat')";
+            mysqli_query($conn, $sql);
+            $hasil = mysqli_affected_rows($conn); //1 / -1
+
+            if ($hasil === 1) {
+                flash("notif", "Data User Berhasil Di Simpan.", "green");
+                header("Location: users.php?keterangan=berhasil");
+                exit();
+            } else {
+                flash("notif", "Data Gagal Di Simpan. Silahkan Ulangi Lagi", "red");
+            }
+        } else {
+            flash("notif_password", "Password tidak sama.", "red");
+        }
+    } else {
+        // notifikasi username sudah digunakan
+        flash("notif_username", "Username $username sudah digunakan.", "red");
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -43,68 +84,69 @@
         </nav>
         <!-- <br> -->
         <article>
-            <form action=""></form>
-            <table style="border-collapse: collapse">
-                <thead>
-                    <tr>
-                        <td></td>
-                        <td><label style="color: white;" for="">nama barang harus di isi</label></td>
-                    </tr>
-                    <tr>
-                        <td>Nama Depan</td>
-                        <td>
-                            <input required name="" type="text" placeholder="isi nama depan" autofocus>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><label style="color: white;" for="">nama barang harus di isi</label></td>
-                    </tr>
-                    <tr>
-                        <td>Nama Belakang</td>
-                        <td>
-                            <input required name="" type="text" placeholder="isi nama belakang">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><label style="color: red;" for="">username sudah digunakan</label></td>
-                    </tr>
-                    <tr>
-                        <td>Username</td>
-                        <td>
-                            <input required name="" type="text" placeholder="masukan username">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><label style="color: white;" for="">password tidak sama</label></td>
-                    </tr>
-                    <tr>
-                        <td>Password</td>
-                        <td>
-                            <input required name="" type="text" placeholder="password">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><label style="color: white;" for="">add</label></td>
-                    </tr>
-                    <tr>
-                        <td>Ulangi Password</td>
-                        <td>
-                            <input required name="" type="text" placeholder="password">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>
-                            <button type="submit">Simpan</button>
-                            <button type="reset">Ulangi</button>
-                        </td>
-                    </tr>
-                </thead>
-            </table>
+            <form action="" method="post">
+                <table style="border-collapse: collapse">
+                    <thead>
+                        <tr>
+                            <td>Nama Depan</td>
+                            <td>
+                                <input required name="namaDepan" type="text" placeholder="isi nama depan" autofocus>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Nama Belakang</td>
+                            <td>
+                                <input required name="namaBelakang" type="text" placeholder="isi nama belakang">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <?php
+                                if (flash("notif_username")) {
+                                    echo flash('notif_username');
+                                };
+                                ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Username</td>
+                            <td>
+                                <input required name="username" type="text" placeholder="masukan username">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <?php
+                                if (flash("notif_password")) {
+                                    echo flash('notif_password');
+                                };
+                                ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Password</td>
+                            <td>
+                                <input required  name="password" type="password" placeholder="password">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Ulangi Password</td>
+                            <td>
+                                <input required  name="passwordConfirm" type="password" placeholder="password">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <button type="submit">Simpan</button>
+                                <button type="reset">Ulangi</button>
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
+            </form>
         </article>
         <footer>
             <h4>Sistem Informasi Perhitungan Laba</h4>

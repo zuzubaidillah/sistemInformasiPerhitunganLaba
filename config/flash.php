@@ -9,7 +9,7 @@ function flash($name = "", $message = "", $class = "red")
         //ADDED:
         elseif (isset($_SESSION[$name]) && isset($_SESSION[$name . "_class"])) {
             // elseif (empty($message) && empty($class) && !empty($name) && !empty($_SESSION[$name])) {
-            echo '<div style="background: ' . $_SESSION[$name . "_class"] . '; width: 100%;" class="' . $_SESSION[$name . "_class"] . '" id="msg-flash"><h2>' . $_SESSION[$name] . '</h2></div>';
+            echo '<div style="background: ' . $_SESSION[$name . "_class"] . '; width: 100%;" class="' . $_SESSION[$name . "_class"] . '" id="msg-flash">' . $_SESSION[$name] . '</div>';
             unset($_SESSION[$name]);
             unset($_SESSION[$name . "_class"]);
         }
