@@ -1,11 +1,16 @@
 <?php
+session_start();
 include "./config/koneksi.php";
+include "./config/flash.php";
+// var_dump($_SESSION);die();
 // cek tabel user
 $rowUser = mysqli_query($conn, "SELECT * FROM tabelUser");
 $countUser = mysqli_num_rows($rowUser);
 if ($countUser>0) {
+    flash("notif", "silahkan Lakukan Login", "cyan");
     // mengirim header HTTP untuk melakukan registrasi
     header("Location: login.php?keterangan=silahkanLakukanLogin");
+    exit();
 }
 // cek dulu kira2 hasil yang dikeluarkan dari tabel user
 // var_dump($countUser);die();
@@ -36,19 +41,23 @@ if (isset($_POST['namaDepan'])) {
         $hasil = mysqli_affected_rows($conn); //1 / -1
 
         if ($hasil === 1) {
-            echo "<script>
-                alert('Berhasil Disimpan');
-            </script>";
-            echo '<meta http-equiv="refresh" content="0.1;url=https://localhost/sisteminformasiperhitunganlaba/login.php" />';
-            // header("Location: login.php?keterangan=silahkanLakukanLogin");
+            // echo "<script>
+            //     alert('Berhasil Disimpan');
+            // </script>";
+            flash("notif", "Data User Berhasil Di Simpan.", "green");
+            // echo '<meta http-equiv="refresh" content="0.1;url=https://localhost/sisteminformasiperhitunganlaba/login.php" />';
+            header("Location: login.php?keterangan=silahkanLakukanLogin");
+            exit();
         }else{
-            echo "<script>
-                alert('Gagal Disimpan');
-            </script>";
+            // echo "<script>
+            //     alert('Gagal Disimpan');
+            // </script>";
+            flash("notif", "Data Gagal Di Simpan. Silahkan Ulangi Lagi", "red");
         }
     }else{
-        echo "<script>alert('Password tidak sama');</script>";
-        $notifikasiPassword = "Password tidak sama";
+        flash("notif_password", "Password tidak sama.", "red");
+        // echo "<script>alert('Password tidak sama');</script>";
+        // $notifikasiPassword = "Password tidak sama";
     }
 }
 ?>
@@ -61,6 +70,13 @@ if (isset($_POST['namaDepan'])) {
     <title>Halaman Login</title>
 </head>
 <body>
+    <header>
+        <?php
+        if (flash("notif")) {
+            echo flash('notif');
+        };
+        ?>
+    </header>
     <form action="" method="POST" width="50%">
         <table>
             <thead>
@@ -101,11 +117,14 @@ if (isset($_POST['namaDepan'])) {
                     <td></td>
                     <td></td>
                     <td>
-                        <label style="color: red;" for="">
+                        <label style="" for="">
                         <?php
-                        if (isset($notifikasiPassword)) {
-                            echo $notifikasiPassword;
-                        }
+                        // if (isset($notifikasiPassword)) {
+                        //     echo $notifikasiPassword;
+                        // }
+                        if (flash("notif_password")) {
+                            echo flash('notif');
+                        };
                         ?>
                         </label>
                     </td>

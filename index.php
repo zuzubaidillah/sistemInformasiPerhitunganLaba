@@ -1,10 +1,14 @@
 <?php
 // session merupakan data yang disimpan dalam suatu server yang dapat digunakan secara global di server tersebut
 session_start();
+include "./config/flash.php";
 if (!$_SESSION['ssIdUser']) {
     // mengirim header HTTP
+    flash("notif", "Anda Diharuskan Login Terlebih Dahulu", "cyan");
     header("Location: login.php?keterangan=andaHarusLogindahulu");
 }
+// echo "<pre>";
+// var_dump($_SESSION);die();
 ?>
 
 <!DOCTYPE html>
@@ -25,6 +29,11 @@ if (!$_SESSION['ssIdUser']) {
 <body>
     <main>
         <header>
+            <?php
+            if (flash("notif")) {
+                echo flash('notif');
+            };
+            ?>
             <h2>Dashboard</h2>
         </header>
         <nav style="border: 1px solid black; margin-bottom: 5px;">

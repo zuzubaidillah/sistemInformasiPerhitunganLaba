@@ -1,5 +1,7 @@
 <?php
+// session_start();
 include './config/koneksi.php';
+include "./config/flash.php";
 
 // var_dump($_POST);die();
 $u = htmlspecialchars($_POST['username'], ENT_QUOTES);
@@ -17,7 +19,7 @@ if ($count >= 1) {
         session_start();
         $_SESSION["ssIdUser"] = $result['idUser'];
         $_SESSION["ssUsername"] = $result['username'];
-    
+        flash("notif", "Selamat Datang DiHalaman Admin! $_SESSION[ssUsername]", "green");
         echo "<script>
             window.location = 'index.php?keterangan=berhasilLogin';
         </script>";
