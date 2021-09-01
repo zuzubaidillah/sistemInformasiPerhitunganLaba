@@ -117,7 +117,7 @@ if (isset($_POST['namaDepan'])) {
                     <td></td>
                     <td></td>
                     <td>
-                        <label style="" for="">
+                        <label>
                         <?php
                         // if (isset($notifikasiPassword)) {
                         //     echo $notifikasiPassword;

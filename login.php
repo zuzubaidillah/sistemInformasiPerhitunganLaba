@@ -45,7 +45,13 @@ if (!$countUser) {
                 <tr>
                     <td></td>
                     <td></td>
-                    <td><label style="color: white;" for="">username salah</label></td>
+                    <td>
+                        <?php
+                        if (flash("notif_username")) {
+                            echo flash('notif_username');
+                        };
+                        ?>
+                    </td>
                 </tr>
                 <tr>
                     <td>Username</td>
@@ -55,7 +61,14 @@ if (!$countUser) {
                 <tr>
                     <td></td>
                     <td></td>
-                    <td><label style="color: white;" for="">password salah</label></td>
+                    <td>
+
+                        <?php
+                        if (flash("notif_password")) {
+                            echo flash('notif_password');
+                        };
+                        ?>
+                    </td>
                 </tr>
                 <tr>
                     <td>Password</td>

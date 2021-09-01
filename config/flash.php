@@ -1,4 +1,6 @@
 <?php
+// session_start();
+
 function flash($name = "", $message = "", $class = "red")
 {
     if (!empty($name)) {
@@ -15,4 +17,7 @@ function flash($name = "", $message = "", $class = "red")
         }
     }
 }
+// flash('notif','percobaan', 'yellow');
+// flash('notif');
+// var_dump($_SESSION);die();
 ?>

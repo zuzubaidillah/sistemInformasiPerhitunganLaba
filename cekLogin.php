@@ -1,5 +1,5 @@
 <?php
-// session_start();
+session_start();
 include './config/koneksi.php';
 include "./config/flash.php";
 
@@ -24,14 +24,14 @@ if ($count >= 1) {
             window.location = 'index.php?keterangan=berhasilLogin';
         </script>";
     }else{
+        flash("notif_password", "Password Salah!", "red");
         echo "<script>
-            alert('Username Salah!');
             window.location = 'index.php';
         </script>";
     }
 }else{
+    flash("notif_username", "Username Salah!", "red");
     echo "<script>
-        alert('Username Salah!');
         window.location = 'index.php';
     </script>";
 }
